@@ -1,4 +1,5 @@
 #!/bin/bash
+myip='hostname -I'
 yes | apt-get update
 yes | apt install ca-certificates apt-transport-https software-properties-common curl lsb-release
 yes | curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
@@ -52,5 +53,6 @@ echo "- temp site created"
 echo "- phpinfo() added"
 echo "- 000-default.conf disabled"
 echo "- temp.conf enabled"
+echo "> temp site url : http://$myip"
 echo "> mysql root password : Not24get@IIA"
 echo "----------------"
