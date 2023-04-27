@@ -1,5 +1,5 @@
 #!/bin/bash
-myip='hostname -I'
+myip=$(hostname -I)
 yes | apt-get update
 yes | apt install ca-certificates apt-transport-https software-properties-common curl lsb-release
 yes | curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
