@@ -16,8 +16,6 @@ if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choi
 then
   echo "website name (ex: wordpress, nextcloud..) :"
   read website_name
-  echo "enable HTTPS [Y/n] ?"
-  read https_choice
 fi
 echo "define a custom url [Y/n] ?"
 read url_choice
@@ -25,6 +23,12 @@ if [ "$url_choice" = "" ] || [ "$url_choice" = "Y" ] || [ "$url_choice" = "y" ]
 then
   echo "URL (ex : temp.fr ) :"
   read url_name
+  echo "enable HTTPS [Y/n] ?"
+  read https_choice
+  if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
+  then
+    website_var="https"
+  fi
 fi
 echo "create a mysql database [Y/n] ?"
 read database_choice
@@ -117,7 +121,7 @@ fi
 
 if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
 then
-  sudo certbot --apache -d $website_url --post-hook "/usr/sbin/service apache2 restart"
+  sudo certbot --apache -d $url_name --post-hook "/usr/sbin/service apache2 restart"
 fi
 
 if [ "$apache2_choice" = "" ] || [ "$apache2_choice" = "Y" ] || [ "$apache2_choice" = "y" ]
