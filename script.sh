@@ -22,7 +22,7 @@ read url_choice
 if [ "$url_choice" = "" ] || [ "$url_choice" = "Y" ] || [ "$url_choice" = "y" ]
 then
   echo "URL (ex : temp.fr ) :"
-  read url_name
+  read website_url
   echo "enable HTTPS [Y/n] ?"
   read https_choice
   if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
@@ -121,7 +121,7 @@ fi
 
 if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
 then
-  sudo certbot --apache -d $url_name --post-hook "/usr/sbin/service apache2 restart"
+  sudo certbot --apache -d $website_url --post-hook "/usr/sbin/service apache2 restart"
 fi
 
 if [ "$apache2_choice" = "" ] || [ "$apache2_choice" = "Y" ] || [ "$apache2_choice" = "y" ]
@@ -131,6 +131,6 @@ fi
 echo "----------------"
 echo "END OF SCRIPT"
 echo "----------------"
-echo "> temp site url : $website_var://$website_url"
-echo "> mysql root password : Not24get@IIA"
+echo "> site url : $website_var://$website_url"
+echo "> password set for all actions : Not24get@IIA"
 echo "----------------"
