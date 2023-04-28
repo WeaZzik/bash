@@ -1,43 +1,46 @@
 #!/bin/bash
 website_url=$(hostname -I)
 website_name="temp"
-echo "install apache2 ?"
+website_var="http"
+echo "install apache2 [Y/n] ?"
 read apache2_choice
-echo "install mariadb ?"
+echo "install mariadb [Y/n] ?"
 read mariadb_choice
-echo "install php8.1 ?"
+echo "install php8.1 [Y/n] ?"
 read php_choice
-echo "enable fail2ban ?"
+echo "enable fail2ban [Y/n] ?"
 read fail2ban_choice
-echo "create a website ?"
+echo "create a website [Y/n] ?"
 read website_choice
 if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choice" = "y" ]
 then
   echo "website name (ex: wordpress, nextcloud..) :"
   read website_name
+  echo "enable HTTPS [Y/n] ?"
+  read https_choice
 fi
-echo "define a custom url ?"
+echo "define a custom url [Y/n] ?"
 read url_choice
 if [ "$url_choice" = "" ] || [ "$url_choice" = "Y" ] || [ "$url_choice" = "y" ]
 then
   echo "URL (ex : temp.fr ) :"
   read url_name
 fi
-echo "create a mysql database ?"
+echo "create a mysql database [Y/n] ?"
 read database_choice
 if [ "$database_choice" = "" ] || [ "$database_choice" = "Y" ] || [ "$database_choice" = "y" ]
 then
   echo "name (ex: wordpress, nextcloudDB..) :"
   read database_name
+  echo "create a mysql service account [Y/n] ?"
+  read dbaccount_choice
+  if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
+  then
+    echo "name (ex: wordpress, nextcloudDBuser..) :"
+    read dbaccount_name
+  fi
 fi
-echo "create a mysql service account ?"
-read dbaccount_choice
-if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
-then
-  echo "name (ex: wordpress, nextcloudDBuser..) :"
-  read dbaccount_name
-fi
-echo "hide web server informations from public ?"
+echo "hide web server informations from public [Y/n] ?"
 read servertokens_choice
 
 yes | apt-get update
@@ -95,9 +98,26 @@ then
   a2ensite $website_name.conf
 fi
 
+if [ "$database_choice" = "" ] || [ "$database_choice" = "Y" ] || [ "$database_choice" = "y" ]
+then
+  mysql -e "CREATE DATABASE $database_name /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+fi
+
+if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
+then
+  mysql -e "CREATE USER $dbaccount_name@localhost IDENTIFIED BY 'Not24get@IIA';"
+  mysql -e "GRANT ALL PRIVILEGES ON $database_name.* TO '$dbaccount_name'@'localhost';"
+  mysql -e "FLUSH PRIVILEGES;"
+fi
+
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
 then
   sed -i 's/ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-enabled/security.conf
+fi
+
+if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
+then
+  sudo certbot --apache -d $website_url --post-hook "/usr/sbin/service apache2 restart"
 fi
 
 if [ "$apache2_choice" = "" ] || [ "$apache2_choice" = "Y" ] || [ "$apache2_choice" = "y" ]
@@ -107,6 +127,6 @@ fi
 echo "----------------"
 echo "END OF SCRIPT"
 echo "----------------"
-echo "> temp site url : http://$website_url"
+echo "> temp site url : $website_var://$website_url"
 echo "> mysql root password : Not24get@IIA"
 echo "----------------"
