@@ -88,8 +88,8 @@ then
   echo "	DocumentRoot /var/www/$website_name" >> /etc/apache2/sites-available/$website_name.conf
   echo "	ServerName $website_url" >> /etc/apache2/sites-available/$website_name.conf
   echo "" >> /etc/apache2/sites-available/$website_name.conf
-  echo '	ErrorLog ${APACHE_LOG_DIR}/$website_name_error.log' >> /etc/apache2/sites-available/$website_name.conf
-  echo '	CustomLog ${APACHE_LOG_DIR}/$website_name_access.log combined' >> /etc/apache2/sites-available/$website_name.conf
+  echo '	ErrorLog ${APACHE_LOG_DIR}/site_error.log' >> /etc/apache2/sites-available/$website_name.conf
+  echo '	CustomLog ${APACHE_LOG_DIR}/site_access.log combined' >> /etc/apache2/sites-available/$website_name.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/$website_name.conf
   a2dissite 000-default.conf
   a2ensite $website_name.conf
