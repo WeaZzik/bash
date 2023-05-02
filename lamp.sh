@@ -2,6 +2,9 @@
 
 #!/bin/bash
 website_url=$(hostname -I)
+nextcloud_url=$(hostname -I)
+wordpress_url=$(hostname -I)
+glpi_url=$(hostname -I)
 website_name="temp"
 website_var="http"
 echo "install apache2 [Y/n] ?"
@@ -18,10 +21,40 @@ if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choi
 then
   echo "install wordpress [Y/n] ?"
   read wordpress_choice
+  if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
+  then
+    echo "set a custom url [Y/n] ?"
+    read wordpress_url_choice
+    if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
+    then
+      echo "custom url (ex: temp.fr) :"
+      read wordpress_url
+    fi
+  fi
   echo "install nextcloud [Y/n] ?"
   read nextcloud_choice
+  if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
+  then
+    echo "set a custom url [Y/n] ?"
+    read nextcloud_url_choice
+    if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
+    then
+      echo "custom url (ex: temp.fr) :"
+      read nextcloud_url
+    fi
+  fi
   echo "install glpi [Y/n] ?"
   read glpi_choice
+  if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
+  then
+    echo "set a custom url [Y/n] ?"
+    read glpi_url_choice
+    if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
+    then
+      echo "custom url (ex: temp.fr) :"
+      read glpi_url
+    fi
+  fi
 fi
 echo "hide web server informations from public [Y/n] ?"
 read servertokens_choice
@@ -108,7 +141,7 @@ then
   touch /etc/apache2/sites-available/wordpress.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/wordpress.conf
   echo "	DocumentRoot /var/www/wordpress" >> /etc/apache2/sites-available/wordpress.conf
-  echo "	ServerName $website_url" >> /etc/apache2/sites-available/wordpress.conf
+  echo "	ServerName $wordpress_url" >> /etc/apache2/sites-available/wordpress.conf
   echo "" >> /etc/apache2/sites-available/wordpress.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/wordpress_error.log' >> /etc/apache2/sites-available/wordpress.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/wordpress_access.log combined' >> /etc/apache2/sites-available/wordpress.conf
@@ -136,7 +169,7 @@ then
   touch /etc/apache2/sites-available/nextcloud.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/nextcloud.conf
   echo "	DocumentRoot /var/www/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
-  echo "	ServerName $website_url" >> /etc/apache2/sites-available/nextcloud.conf
+  echo "	ServerName $nextcloud_url" >> /etc/apache2/sites-available/nextcloud.conf
   echo "" >> /etc/apache2/sites-available/nextcloud.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/nextcloud_error.log' >> /etc/apache2/sites-available/nextcloud.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/nextcloud_access.log combined' >> /etc/apache2/sites-available/nextcloud.conf
@@ -165,7 +198,7 @@ then
   touch /etc/apache2/sites-available/glpi.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/glpi.conf
   echo "	DocumentRoot /var/www/glpi" >> /etc/apache2/sites-available/glpi.conf
-  echo "	ServerName $website_url" >> /etc/apache2/sites-available/glpi.conf
+  echo "	ServerName $glpi_url" >> /etc/apache2/sites-available/glpi.conf
   echo "" >> /etc/apache2/sites-available/glpi.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/glpi_error.log' >> /etc/apache2/sites-available/glpi.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/glpi_access.log combined' >> /etc/apache2/sites-available/glpi.conf
@@ -192,6 +225,7 @@ then
   echo "> wordpress database : wordpress"
   echo "> wordpress password : Not24get@IIA"
   echo "> wordpress path : /var/www/wordpress"
+  echo "> wordpress URL : $wordpress_url"
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -199,6 +233,7 @@ then
   echo "> nextcloud database : nextcloud"
   echo "> nextcloud password : Not24get@IIA"
   echo "> nextcloud path : /var/www/nextcloud"
+  echo "> nextcloud URL : $nextcloud_url"
 fi
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
 then
@@ -206,6 +241,7 @@ then
   echo "> glpi database : glpi"
   echo "> glpi password : Not24get@IIA"
   echo "> glpi path : /var/www/glpi"
+  echo "> glpi URL : $glpi_url"
 fi
 echo "----------------"
 echo "> password set for all actions : Not24get@IIA"
