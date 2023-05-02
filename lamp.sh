@@ -123,6 +123,11 @@ then
   rm -r /var/www/nextcloud
   mkdir /var/www/nextcloud
   wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/nextcloud
+  unzip /var/www/nextcloud/latest.zip -d /var/www/nextcloud
+  mv /var/www/nextcloud/nextcloud/* /var/www/nextcloud
+  rm -r /var/www/nextcloud/latest.zip
+  rm -r /var/www/nextcloud/nextcloud
+  chown -R www-data:www-data /var/www/nextcloud
   rm -r /etc/apache2/sites-available/nextcloud.conf
   touch /etc/apache2/sites-available/nextcloud.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/nextcloud.conf
