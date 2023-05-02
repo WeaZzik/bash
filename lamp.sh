@@ -3,8 +3,6 @@
 #!/bin/bash
 temp=$(hostname -I)
 myip=$(echo "${temp// /}")
-website_name="temp"
-website_var="http"
 echo "install apache2 [Y/n] ?"
 read apache2_choice
 echo "install mariadb [Y/n] ?"
