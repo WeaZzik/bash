@@ -1,3 +1,5 @@
+#################### QNA ######################
+
 #!/bin/bash
 website_url=$(hostname -I)
 website_name="temp"
@@ -14,38 +16,18 @@ echo "create a website [Y/n] ?"
 read website_choice
 if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choice" = "y" ]
 then
-  echo "website name (ex: wordpress, nextcloud..) :"
-  read website_name
-fi
-echo "define a custom url [Y/n] ?"
-read url_choice
-if [ "$url_choice" = "" ] || [ "$url_choice" = "Y" ] || [ "$url_choice" = "y" ]
-then
-  echo "URL (ex : temp.fr ) :"
-  read website_url
-  echo "enable HTTPS [Y/n] ?"
-  read https_choice
-  if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
-  then
-    website_var="https"
-  fi
-fi
-echo "create a mysql database [Y/n] ?"
-read database_choice
-if [ "$database_choice" = "" ] || [ "$database_choice" = "Y" ] || [ "$database_choice" = "y" ]
-then
-  echo "name (ex: wordpress, nextcloudDB..) :"
-  read database_name
-  echo "create a mysql service account [Y/n] ?"
-  read dbaccount_choice
-  if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
-  then
-    echo "name (ex: wordpress, nextcloudDBuser..) :"
-    read dbaccount_name
-  fi
+  echo "install wordpress [Y/n] ?"
+  read wordpress_choice
+  echo "install nextcloud [Y/n] ?"
+  read nextcloud_choice
+  echo "install glpi [Y/n] ?"
+  read glpi_choice
 fi
 echo "hide web server informations from public [Y/n] ?"
 read servertokens_choice
+
+
+#################### COMMANDS ######################
 
 yes | apt-get update
 
@@ -81,30 +63,104 @@ fi
 
 if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choice" = "y" ]
 then
-  rm -r /var/www/$website_name
-  mkdir /var/www/$website_name
-  touch /var/www/$website_name/index.php
-  chmod +u+r+x /var/www/$website_name/index.php
-  echo "<?php" > /var/www/$website_name/index.php
-  echo "phpinfo()" >> /var/www/$website_name/index.php
-  echo "?>" >> /var/www/$website_name/index.php
-  rm -r /etc/apache2/sites-available/$website_name.conf
-  touch /etc/apache2/sites-available/$website_name.conf
-  echo "<VirtualHost *:80>" > /etc/apache2/sites-available/$website_name.conf
-  echo "	ServerAdmin webmaster@localhost" >> /etc/apache2/sites-available/$website_name.conf
-  echo "	DocumentRoot /var/www/$website_name" >> /etc/apache2/sites-available/$website_name.conf
-  echo "	ServerName $website_url" >> /etc/apache2/sites-available/$website_name.conf
-  echo "" >> /etc/apache2/sites-available/$website_name.conf
-  echo '	ErrorLog ${APACHE_LOG_DIR}/site_error.log' >> /etc/apache2/sites-available/$website_name.conf
-  echo '	CustomLog ${APACHE_LOG_DIR}/site_access.log combined' >> /etc/apache2/sites-available/$website_name.conf
-  echo "</VirtualHost>" >> /etc/apache2/sites-available/$website_name.conf
+  rm -r /var/www/html
+  mkdir /var/www/html
+  touch /var/www/html/index.php
+  chmod +u+r+x /var/www/html/index.php
+  echo "<?php" > /var/www/html/index.php
+  echo "phpinfo()" >> /var/www/html/index.php
+  echo "?>" >> /var/www/html/index.php
+  rm -r /etc/apache2/sites-available/000-default.conf
+  touch /etc/apache2/sites-available/000-default.conf
+  echo "<VirtualHost *:80>" > /etc/apache2/sites-available/000-default.conf
+  echo "	DocumentRoot /var/www/html" >> /etc/apache2/sites-available/000-default.conf
+  echo "	ServerName $website_url" >> /etc/apache2/sites-available/000-default.conf
+  echo "" >> /etc/apache2/sites-available/000-default.conf
+  echo '	ErrorLog ${APACHE_LOG_DIR}/html_error.log' >> /etc/apache2/sites-available/000-default.conf
+  echo '	CustomLog ${APACHE_LOG_DIR}/html_access.log combined' >> /etc/apache2/sites-available/000-default.conf
+  echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf
   a2dissite 000-default.conf
-  a2ensite $website_name.conf
+  a2ensite 000-default.conf
 fi
 
-if [ "$database_choice" = "" ] || [ "$database_choice" = "Y" ] || [ "$database_choice" = "y" ]
+if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
 then
-  mysql -e "CREATE DATABASE $database_name /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+  mysql -e "CREATE DATABASE wordpress /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+  mysql -e "CREATE USER wordpress@localhost IDENTIFIED BY 'Not24get@IIA';"
+  mysql -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost';"
+  mysql -e "FLUSH PRIVILEGES;"
+  rm -r /var/www/wordpress
+  mkdir /var/www/wordpress
+  wget https://wordpress.org/latest.zip -P /var/www/wordpress
+  unzip /var/www/wordpress/latest.zip -d /var/www/wordpress
+  mv /var/www/wordpress/wordpress/* /var/www/wordpress
+  rm -r /var/www/wordpress/latest.zip
+  rm -r /var/www/wordpress/wordpress
+  chown -R www-data:www-data /var/www/wordpress
+  cp /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php
+  sed -i 's/database_name_here/wordpress/' /var/www/wordpress/wp-config.php
+  sed -i 's/username_here/wordpress/' /var/www/wordpress/wp-config.php
+  sed -i 's/password_here/Not24get@IIA/' /var/www/wordpress/wp-config.php
+  rm /var/www/wordpress/readme.html
+  rm -r /etc/apache2/sites-available/wordpress.conf
+  touch /etc/apache2/sites-available/wordpress.conf
+  echo "<VirtualHost *:80>" > /etc/apache2/sites-available/wordpress.conf
+  echo "	DocumentRoot /var/www/wordpress" >> /etc/apache2/sites-available/wordpress.conf
+  echo "	ServerName $website_url" >> /etc/apache2/sites-available/wordpress.conf
+  echo "" >> /etc/apache2/sites-available/wordpress.conf
+  echo '	ErrorLog ${APACHE_LOG_DIR}/wordpress_error.log' >> /etc/apache2/sites-available/wordpress.conf
+  echo '	CustomLog ${APACHE_LOG_DIR}/wordpress_access.log combined' >> /etc/apache2/sites-available/wordpress.conf
+  echo "</VirtualHost>" >> /etc/apache2/sites-available/wordpress.conf
+  a2dissite wordpress.conf
+  a2ensite wordpress.conf
+fi
+if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
+then
+  mysql -e "CREATE DATABASE nextcloud /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+  mysql -e "CREATE USER nextcloud@localhost IDENTIFIED BY 'Not24get@IIA';"
+  mysql -e "GRANT ALL PRIVILEGES ON nextcloud.* TO 'nextcloud'@'localhost';"
+  mysql -e "FLUSH PRIVILEGES;"
+  rm -r /var/www/nextcloud
+  mkdir /var/www/nextcloud
+  wget https://download.nextcloud.com/server/releases/latest.zip -P /var/www/nextcloud
+  rm -r /etc/apache2/sites-available/nextcloud.conf
+  touch /etc/apache2/sites-available/nextcloud.conf
+  echo "<VirtualHost *:80>" > /etc/apache2/sites-available/nextcloud.conf
+  echo "	DocumentRoot /var/www/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
+  echo "	ServerName $website_url" >> /etc/apache2/sites-available/nextcloud.conf
+  echo "" >> /etc/apache2/sites-available/nextcloud.conf
+  echo '	ErrorLog ${APACHE_LOG_DIR}/nextcloud_error.log' >> /etc/apache2/sites-available/nextcloud.conf
+  echo '	CustomLog ${APACHE_LOG_DIR}/nextcloud_access.log combined' >> /etc/apache2/sites-available/nextcloud.conf
+  echo "</VirtualHost>" >> /etc/apache2/sites-available/nextcloud.conf
+  a2dissite nextcloud.conf
+  a2ensite nextcloud.conf
+fi
+
+if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
+then
+  mysql -e "CREATE DATABASE glpi /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+  mysql -e "CREATE USER glpi@localhost IDENTIFIED BY 'Not24get@IIA';"
+  mysql -e "GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost';"
+  mysql -e "FLUSH PRIVILEGES;"
+  rm -r /var/www/glpi
+  mkdir /var/www/glpi
+  wget https://github.com/glpi-project/glpi/releases/download/10.0.7/glpi-10.0.7.tgz -P /var/www/glpi
+  tar -xvf /var/www/glpi/*.tgz -C /var/www/glpi
+  rm -r /var/www/glpi/*.tgz
+  mv /var/www/glpi/glpi/* /var/www/glpi
+  rm -r /var/www/glpi/glpi
+  chown -R www-data:www-data /var/www/glpi
+  rm -r /etc/apache2/sites-available/glpi.conf
+  touch /etc/apache2/sites-available/glpi.conf
+  echo "<VirtualHost *:80>" > /etc/apache2/sites-available/glpi.conf
+  echo "	DocumentRoot /var/www/glpi" >> /etc/apache2/sites-available/glpi.conf
+  echo "	ServerName $website_url" >> /etc/apache2/sites-available/glpi.conf
+  echo "" >> /etc/apache2/sites-available/glpi.conf
+  echo '	ErrorLog ${APACHE_LOG_DIR}/glpi_error.log' >> /etc/apache2/sites-available/glpi.conf
+  echo '	CustomLog ${APACHE_LOG_DIR}/glpi_access.log combined' >> /etc/apache2/sites-available/glpi.conf
+  echo "</VirtualHost>" >> /etc/apache2/sites-available/glpi.conf
+  a2dissite glpi.conf
+  a2ensite glpi.conf
 fi
 
 if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
@@ -131,6 +187,27 @@ fi
 echo "----------------"
 echo "END OF SCRIPT"
 echo "----------------"
-echo "> site url : $website_var://$website_url"
+if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
+then
+  echo "> wordpress user : wordpress"
+  echo "> wordpress database : wordpress"
+  echo "> wordpress password : Not24get@IIA"
+  echo "> wordpress path : /var/www/wordpress"
+fi
+if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
+then
+  echo "> nextcloud user : nextcloud"
+  echo "> nextcloud database : nextcloud"
+  echo "> nextcloud password : Not24get@IIA"
+  echo "> nextcloud path : /var/www/nextcloud"
+fi
+if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
+then
+  echo "> glpi user : glpi"
+  echo "> glpi database : glpi"
+  echo "> glpi password : Not24get@IIA"
+  echo "> glpi path : /var/www/glpi"
+fi
+echo "----------------"
 echo "> password set for all actions : Not24get@IIA"
 echo "----------------"
