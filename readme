@@ -1,3 +1,7 @@
+# Download and Execute Script #
 wget https://weazzik.fr/lamp.zip
 unzip lamp.zip
 ./lamp.sh
+
+# Add HTTPS to a custom URL #
+sudo certbot --apache -d <URL> --post-hook "/usr/sbin/service apache2 restart"
