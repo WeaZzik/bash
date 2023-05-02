@@ -174,21 +174,9 @@ then
   a2ensite glpi.conf
 fi
 
-if [ "$dbaccount_choice" = "" ] || [ "$dbaccount_choice" = "Y" ] || [ "$dbaccount_choice" = "y" ]
-then
-  mysql -e "CREATE USER $dbaccount_name@localhost IDENTIFIED BY 'Not24get@IIA';"
-  mysql -e "GRANT ALL PRIVILEGES ON $database_name.* TO '$dbaccount_name'@'localhost';"
-  mysql -e "FLUSH PRIVILEGES;"
-fi
-
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
 then
   sed -i 's/ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-enabled/security.conf
-fi
-
-if [ "$https_choice" = "" ] || [ "$https_choice" = "Y" ] || [ "$https_choice" = "y" ]
-then
-  sudo certbot --apache -d $website_url --post-hook "/usr/sbin/service apache2 restart"
 fi
 
 if [ "$apache2_choice" = "" ] || [ "$apache2_choice" = "Y" ] || [ "$apache2_choice" = "y" ]
