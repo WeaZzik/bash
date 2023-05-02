@@ -152,8 +152,6 @@ then
   then
     sudo certbot --apache -d $wordpress_url --post-hook "/usr/sbin/service apache2 restart"
   fi
-  a2dissite wordpress.conf
-  a2ensite wordpress.conf
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -189,8 +187,6 @@ then
   then
     sudo certbot --apache -d $nextcloud_url --post-hook "/usr/sbin/service apache2 restart"
   fi
-  a2dissite nextcloud.conf
-  a2ensite nextcloud.conf
 fi
 
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
@@ -227,8 +223,6 @@ then
   then
     sudo certbot --apache -d $glpi_url --post-hook "/usr/sbin/service apache2 restart"
   fi
-  a2dissite glpi.conf
-  a2ensite glpi.conf
 fi
 
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
@@ -238,6 +232,23 @@ fi
 
 if [ "$apache2_choice" = "" ] || [ "$apache2_choice" = "Y" ] || [ "$apache2_choice" = "y" ]
 then
+  a2dissite '*'
+  a2ensite 000-default.conf
+  if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
+  then
+    a2ensite wordpress.conf
+    a2dissite 000-default.conf
+  fi
+  if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
+  then
+    a2ensite nextcloud.conf
+    a2dissite 000-default.conf
+  fi
+  if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
+  then
+    a2ensite glpi.conf
+    a2dissite 000-default.conf
+  fi
   systemctl restart apache2
 fi
 echo "----------------"
