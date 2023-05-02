@@ -1,3 +1,3 @@
-wget https://raw.githubusercontent.com/WeaZzik/bash/main/script.sh
+wget https://weazzik.fr/script.sh
 chmod +u+r+x script.sh
 ./script.sh
