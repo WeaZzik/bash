@@ -89,7 +89,7 @@ then
   then
     echo '	Alias /glpi  /var/www/html/glpi' >> /etc/apache2/sites-available/localhost.conf
   fi
-  echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf
+  echo "</VirtualHost>" >> /etc/apache2/sites-available/localhost.conf
   a2dissite 000-default.conf
   a2ensite localhost.conf
 fi
