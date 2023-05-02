@@ -85,6 +85,8 @@ fi
 
 if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
 then
+  mysql -e "DROP DATABASE IF EXISTS wordpress;"
+  mysql -e "DROP USER IF EXISTS 'wordpress'@'localhost';"
   mysql -e "CREATE DATABASE wordpress /*\!40100 DEFAULT CHARACTER SET utf8 */;"
   mysql -e "CREATE USER wordpress@localhost IDENTIFIED BY 'Not24get@IIA';"
   mysql -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost';"
@@ -116,6 +118,8 @@ then
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
+  mysql -e "DROP DATABASE IF EXISTS nextcloud;"
+  mysql -e "DROP USER IF EXISTS 'nextcloud'@'localhost';"
   mysql -e "CREATE DATABASE nextcloud /*\!40100 DEFAULT CHARACTER SET utf8 */;"
   mysql -e "CREATE USER nextcloud@localhost IDENTIFIED BY 'Not24get@IIA';"
   mysql -e "GRANT ALL PRIVILEGES ON nextcloud.* TO 'nextcloud'@'localhost';"
@@ -143,6 +147,8 @@ fi
 
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
 then
+  mysql -e "DROP DATABASE IF EXISTS glpi;"
+  mysql -e "DROP USER IF EXISTS 'glpi'@'localhost';"
   mysql -e "CREATE DATABASE glpi /*\!40100 DEFAULT CHARACTER SET utf8 */;"
   mysql -e "CREATE USER glpi@localhost IDENTIFIED BY 'Not24get@IIA';"
   mysql -e "GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost';"
