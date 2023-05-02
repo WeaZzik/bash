@@ -142,12 +142,16 @@ then
   then
     echo "	ServerName $wordpress_url" >> /etc/apache2/sites-available/wordpress.conf
   else
-    echo "	ServerName $myip" >> /etc/apache2/sites-available/wordpress.conf
+    echo "	ServerName $myip/wordpress" >> /etc/apache2/sites-available/wordpress.conf
   fi
   echo "" >> /etc/apache2/sites-available/wordpress.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/wordpress_error.log' >> /etc/apache2/sites-available/wordpress.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/wordpress_access.log combined' >> /etc/apache2/sites-available/wordpress.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/wordpress.conf
+  if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
+  then
+    sudo certbot --apache -d $wordpress_url --post-hook "/usr/sbin/service apache2 restart"
+  fi
   a2dissite wordpress.conf
   a2ensite wordpress.conf
 fi
@@ -175,12 +179,16 @@ then
   then
     echo "	ServerName $nextcloud_url" >> /etc/apache2/sites-available/nextcloud.conf
   else
-    echo "	ServerName $myip" >> /etc/apache2/sites-available/nextcloud.conf
+    echo "	ServerName $myip/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
   fi
   echo "" >> /etc/apache2/sites-available/nextcloud.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/nextcloud_error.log' >> /etc/apache2/sites-available/nextcloud.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/nextcloud_access.log combined' >> /etc/apache2/sites-available/nextcloud.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/nextcloud.conf
+  if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
+  then
+    sudo certbot --apache -d $nextcloud_url --post-hook "/usr/sbin/service apache2 restart"
+  fi
   a2dissite nextcloud.conf
   a2ensite nextcloud.conf
 fi
@@ -209,12 +217,16 @@ then
   then
     echo "	ServerName $glpi_url" >> /etc/apache2/sites-available/glpi.conf
   else
-    echo "	ServerName $myip" >> /etc/apache2/sites-available/glpi.conf
+    echo "	ServerName $myip/glpi" >> /etc/apache2/sites-available/glpi.conf
   fi
   echo "" >> /etc/apache2/sites-available/glpi.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/glpi_error.log' >> /etc/apache2/sites-available/glpi.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/glpi_access.log combined' >> /etc/apache2/sites-available/glpi.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/glpi.conf
+  if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
+  then
+    sudo certbot --apache -d $glpi_url --post-hook "/usr/sbin/service apache2 restart"
+  fi
   a2dissite glpi.conf
   a2ensite glpi.conf
 fi
@@ -237,7 +249,12 @@ then
   echo "> wordpress database : wordpress"
   echo "> wordpress password : Not24get@IIA"
   echo "> wordpress path : /var/www/wordpress"
-  echo "> wordpress URL : $wordpress_url"
+  if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
+  then
+    echo "> wordpress URL : https://$wordpress_url"
+  else
+    echo "> wordpress URL : http://$myip/wordpress"
+  fi
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -245,7 +262,12 @@ then
   echo "> nextcloud database : nextcloud"
   echo "> nextcloud password : Not24get@IIA"
   echo "> nextcloud path : /var/www/nextcloud"
-  echo "> nextcloud URL : $nextcloud_url"
+  if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
+  then
+    echo "> nextcloud URL : https://$nextcloud_url"
+  else
+    echo "> nextcloud URL : http://$myip/nextcloud"
+  fi
 fi
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
 then
@@ -253,7 +275,12 @@ then
   echo "> glpi database : glpi"
   echo "> glpi password : Not24get@IIA"
   echo "> glpi path : /var/www/glpi"
-  echo "> glpi URL : $glpi_url"
+  if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
+  then
+    echo "> glpi URL : https://$glpi_url"
+  else
+    echo "> glpi URL : http://$myip/glpi"
+  fi
 fi
 echo "----------------"
 echo "> password set for all actions : Not24get@IIA"
