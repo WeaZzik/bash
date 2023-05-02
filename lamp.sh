@@ -32,6 +32,7 @@ yes | apt-get update
 
 if [ "$php_choice" = "" ] || [ "$php_choice" = "Y" ] || [ "$php_choice" = "y" ]
 then
+  yes | sudo apt-get purge 'php*'
   yes | apt install ca-certificates apt-transport-https software-properties-common curl lsb-release
   yes | curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
   yes | apt-get update
