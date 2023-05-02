@@ -1,7 +1,8 @@
 #################### QNA ######################
 
 #!/bin/bash
-myip=$(hostname -I)
+temp=$(hostname -I)
+myip=$(echo "${temp// /}")
 website_name="temp"
 website_var="http"
 echo "install apache2 [Y/n] ?"
@@ -18,40 +19,10 @@ if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choi
 then
   echo "install wordpress [Y/n] ?"
   read wordpress_choice
-  if [ "$wordpress_choice" = "" ] || [ "$wordpress_choice" = "Y" ] || [ "$wordpress_choice" = "y" ]
-  then
-    echo "set a custom url [Y/n] ?"
-    read wordpress_url_choice
-    if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
-    then
-      echo "custom url (ex: temp.fr) :"
-      read wordpress_url
-    fi
-  fi
   echo "install nextcloud [Y/n] ?"
   read nextcloud_choice
-  if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
-  then
-    echo "set a custom url [Y/n] ?"
-    read nextcloud_url_choice
-    if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
-    then
-      echo "custom url (ex: temp.fr) :"
-      read nextcloud_url
-    fi
-  fi
   echo "install glpi [Y/n] ?"
   read glpi_choice
-  if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
-  then
-    echo "set a custom url [Y/n] ?"
-    read glpi_url_choice
-    if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
-    then
-      echo "custom url (ex: temp.fr) :"
-      read glpi_url
-    fi
-  fi
 fi
 echo "hide web server informations from public [Y/n] ?"
 read servertokens_choice
@@ -138,20 +109,11 @@ then
   touch /etc/apache2/sites-available/wordpress.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/wordpress.conf
   echo "	DocumentRoot /var/www/wordpress" >> /etc/apache2/sites-available/wordpress.conf
-  if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
-  then
-    echo "	ServerName $wordpress_url" >> /etc/apache2/sites-available/wordpress.conf
-  else
-    echo "	ServerName $myip/wordpress" >> /etc/apache2/sites-available/wordpress.conf
-  fi
+  echo "	ServerName $myip/wordpress" >> /etc/apache2/sites-available/wordpress.conf
   echo "" >> /etc/apache2/sites-available/wordpress.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/wordpress_error.log' >> /etc/apache2/sites-available/wordpress.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/wordpress_access.log combined' >> /etc/apache2/sites-available/wordpress.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/wordpress.conf
-  if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
-  then
-    sudo certbot --apache -d $wordpress_url --post-hook "/usr/sbin/service apache2 restart"
-  fi
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -173,20 +135,11 @@ then
   touch /etc/apache2/sites-available/nextcloud.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/nextcloud.conf
   echo "	DocumentRoot /var/www/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
-  if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
-  then
-    echo "	ServerName $nextcloud_url" >> /etc/apache2/sites-available/nextcloud.conf
-  else
-    echo "	ServerName $myip/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
-  fi
+  echo "	ServerName $myip/nextcloud" >> /etc/apache2/sites-available/nextcloud.conf
   echo "" >> /etc/apache2/sites-available/nextcloud.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/nextcloud_error.log' >> /etc/apache2/sites-available/nextcloud.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/nextcloud_access.log combined' >> /etc/apache2/sites-available/nextcloud.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/nextcloud.conf
-  if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
-  then
-    sudo certbot --apache -d $nextcloud_url --post-hook "/usr/sbin/service apache2 restart"
-  fi
 fi
 
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
@@ -209,20 +162,11 @@ then
   touch /etc/apache2/sites-available/glpi.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/glpi.conf
   echo "	DocumentRoot /var/www/glpi" >> /etc/apache2/sites-available/glpi.conf
-  if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
-  then
-    echo "	ServerName $glpi_url" >> /etc/apache2/sites-available/glpi.conf
-  else
-    echo "	ServerName $myip/glpi" >> /etc/apache2/sites-available/glpi.conf
-  fi
+  echo "	ServerName $myip/glpi" >> /etc/apache2/sites-available/glpi.conf
   echo "" >> /etc/apache2/sites-available/glpi.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/glpi_error.log' >> /etc/apache2/sites-available/glpi.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/glpi_access.log combined' >> /etc/apache2/sites-available/glpi.conf
   echo "</VirtualHost>" >> /etc/apache2/sites-available/glpi.conf
-  if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
-  then
-    sudo certbot --apache -d $glpi_url --post-hook "/usr/sbin/service apache2 restart"
-  fi
 fi
 
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
@@ -260,12 +204,7 @@ then
   echo "> wordpress database : wordpress"
   echo "> wordpress password : Not24get@IIA"
   echo "> wordpress path : /var/www/wordpress"
-  if [ "$wordpress_url_choice" = "" ] || [ "$wordpress_url_choice" = "Y" ] || [ "$wordpress_url_choice" = "y" ]
-  then
-    echo "> wordpress URL : https://$wordpress_url"
-  else
-    echo "> wordpress URL : http://$myip/wordpress"
-  fi
+  echo "> wordpress URL : http://$myip/wordpress"
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -273,12 +212,7 @@ then
   echo "> nextcloud database : nextcloud"
   echo "> nextcloud password : Not24get@IIA"
   echo "> nextcloud path : /var/www/nextcloud"
-  if [ "$nextcloud_url_choice" = "" ] || [ "$nextcloud_url_choice" = "Y" ] || [ "$nextcloud_url_choice" = "y" ]
-  then
-    echo "> nextcloud URL : https://$nextcloud_url"
-  else
-    echo "> nextcloud URL : http://$myip/nextcloud"
-  fi
+  echo "> nextcloud URL : http://$myip/nextcloud"
 fi
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
 then
@@ -286,12 +220,7 @@ then
   echo "> glpi database : glpi"
   echo "> glpi password : Not24get@IIA"
   echo "> glpi path : /var/www/glpi"
-  if [ "$glpi_url_choice" = "" ] || [ "$glpi_url_choice" = "Y" ] || [ "$glpi_url_choice" = "y" ]
-  then
-    echo "> glpi URL : https://$glpi_url"
-  else
-    echo "> glpi URL : http://$myip/glpi"
-  fi
+  echo "> glpi URL : http://$myip/glpi"
 fi
 echo "----------------"
 echo "> password set for all actions : Not24get@IIA"
