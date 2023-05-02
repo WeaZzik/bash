@@ -138,6 +138,7 @@ then
 "mysql" --database-name "nextcloud"  --database-user "nextcloud" --database-pass \
 "Not24get@IIA" --admin-user "nextcloud" --admin-pass "Not24get@IIA"
   cd ~
+  sed -ie "/^0/a 1 => 'localhost/nextcloud'" /var/www/html/nextcloud/config/config.php
 fi
 
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
