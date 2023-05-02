@@ -133,6 +133,9 @@ then
   rm -r /var/www/html/nextcloud/latest.zip
   rm -r /var/www/html/nextcloud/nextcloud
   chown -R www-data:www-data /var/www/html/nextcloud
+  sudo -u www-data php occ  maintenance:install --database \
+"mysql" --database-name "nextcloud"  --database-user "nextcloud" --database-pass \
+"Not24get@IIA" --admin-user "nextcloud" --admin-pass "Not24get@IIA"
 fi
 
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
