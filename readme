@@ -5,6 +5,3 @@ unzip lamp.zip
 
 # Add HTTPS to a custom URL #
 sudo certbot --apache -d <URL> --post-hook "/usr/sbin/service apache2 restart"
-/* egege */
-## erherh
-// zrfzegrg //
