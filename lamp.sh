@@ -15,6 +15,13 @@ echo "create a website [Y/n] ?"
 read website_choice
 if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choice" = "y" ]
 then
+  echo "add a custom url ? [Y/n] ?"
+  read customurl_choice
+  if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
+  then
+    echo "enter custom url (ex: temp.fr) :"
+    read custom_url
+  fi
   echo "install wordpress [Y/n] ?"
   read wordpress_choice
   echo "install nextcloud [Y/n] ?"
@@ -74,7 +81,12 @@ then
   touch /etc/apache2/sites-available/localhost.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/localhost.conf
   echo "	DocumentRoot /var/www/html" >> /etc/apache2/sites-available/localhost.conf
-  echo "	ServerName $myip" >> /etc/apache2/sites-available/localhost.conf
+  if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
+  then
+    echo "	ServerName $customurl" >> /etc/apache2/sites-available/localhost.conf
+  else
+    echo "	ServerName $myip" >> /etc/apache2/sites-available/localhost.conf
+  fi
   echo "" >> /etc/apache2/sites-available/localhost.conf
   echo '	ErrorLog ${APACHE_LOG_DIR}/html_error.log' >> /etc/apache2/sites-available/localhost.conf
   echo '	CustomLog ${APACHE_LOG_DIR}/html_access.log combined' >> /etc/apache2/sites-available/localhost.conf
@@ -86,7 +98,6 @@ then
   then
     echo '	Alias /nextcloud  /var/www/html/nextcloud' >> /etc/apache2/sites-available/localhost.conf
   fi
-  if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
   then
     echo '	Alias /glpi  /var/www/html/glpi' >> /etc/apache2/sites-available/localhost.conf
   fi
@@ -172,7 +183,12 @@ then
   echo "> wordpress database : wordpress"
   echo "> wordpress password : Not24get@IIA"
   echo "> wordpress path : /var/www/html/wordpress"
-  echo "> wordpress URL : http://$myip/wordpress"
+  if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
+  then
+    echo "> wordpress URL : http://$customurl/wordpress"
+  else
+    echo "> wordpress URL : http://$customurl/wordpress"
+  fi
 fi
 if [ "$nextcloud_choice" = "" ] || [ "$nextcloud_choice" = "Y" ] || [ "$nextcloud_choice" = "y" ]
 then
@@ -180,7 +196,12 @@ then
   echo "> nextcloud database : nextcloud"
   echo "> nextcloud password : Not24get@IIA"
   echo "> nextcloud path : /var/www/html/nextcloud"
-  echo "> nextcloud URL : http://$myip/nextcloud"
+  if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
+  then
+    echo "> wordpress URL : http://$customurl/nextcloud"
+  else
+    echo "> wordpress URL : http://$customurl/nextcloud"
+  fi
 fi
 if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
 then
@@ -188,7 +209,12 @@ then
   echo "> glpi database : glpi"
   echo "> glpi password : Not24get@IIA"
   echo "> glpi path : /var/www/html/glpi"
-  echo "> glpi URL : http://$myip/glpi"
+  if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
+  then
+    echo "> wordpress URL : http://$customurl/glpi"
+  else
+    echo "> wordpress URL : http://$customurl/glpi"
+  fi
 fi
 echo "----------------"
 echo "> password set for all actions : Not24get@IIA"
