@@ -1,6 +1,7 @@
 # Download and Execute Script #
-wget https://weazzik.fr/lamp.zip
-unzip lamp.zip
+cd /tmp
+wget https://raw.githubusercontent.com/WeaZzik/bash/main/lamp.sh
+chmod +u+r+x lamp.sh
 ./lamp.sh
 
 # Add HTTPS to a custom URL #
