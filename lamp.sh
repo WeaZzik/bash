@@ -98,14 +98,15 @@ then
   then
     echo '	Alias /nextcloud  /var/www/nextcloud' >> /etc/apache2/sites-available/localhost.conf
   fi
+  if [ "$glpi_choice" = "" ] || [ "$glpi_choice" = "Y" ] || [ "$glpi_choice" = "y" ]
   then
     echo '	Alias /glpi  /var/www/glpi/public' >> /etc/apache2/sites-available/localhost.conf
-    echo '  <Directory /var/www/glpi/public>' >> /etc/apache2/sites-available/localhost.conf
-	  echo '    Require all granted' >> /etc/apache2/sites-available/localhost.conf
-	  echo '    RewriteEngine On' >> /etc/apache2/sites-available/localhost.conf
-	  echo '    RewriteCond %{REQUEST_FILENAME} !-f' >> /etc/apache2/sites-available/localhost.conf
-	  echo '    RewriteRule ^(.*)$ index.php [QSA,L]' >> /etc/apache2/sites-available/localhost.conf
-    echo '  </Directory>' >> /etc/apache2/sites-available/localhost.conf
+    echo '	<Directory /var/www/glpi/public>' >> /etc/apache2/sites-available/localhost.conf
+    echo '		Require all granted' >> /etc/apache2/sites-available/localhost.conf
+    echo '		RewriteEngine On' >> /etc/apache2/sites-available/localhost.conf
+    echo '		RewriteCond %{REQUEST_FILENAME} !-f' >> /etc/apache2/sites-available/localhost.conf
+    echo '		RewriteRule ^(.*)$ index.php [QSA,L]' >> /etc/apache2/sites-available/localhost.conf
+    echo '	</Directory>' >> /etc/apache2/sites-available/localhost.conf
   fi
   echo "</VirtualHost>" >> /etc/apache2/sites-available/localhost.conf
   a2dissite 000-default.conf
