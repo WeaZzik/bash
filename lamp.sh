@@ -160,14 +160,14 @@ then
   mysql -e "CREATE USER glpi@localhost IDENTIFIED BY 'Not24get@IIA';"
   mysql -e "GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost';"
   mysql -e "FLUSH PRIVILEGES;"
-  rm -r /var/www/html/glpi
-  mkdir /var/www/html/glpi
-  wget https://github.com/glpi-project/glpi/releases/download/10.0.7/glpi-10.0.7.tgz -P /var/www/html/glpi
-  tar -xvf /var/www/glpi/*.tgz -C /var/www/html/glpi
-  rm -r /var/www/html/glpi/*.tgz
-  mv /var/www/html/glpi/glpi/* /var/www/html/glpi
-  rm -r /var/www/html/glpi/glpi
-  chown -R www-data:www-data /var/www/html/glpi
+  rm -r /var/www/glpi
+  mkdir /var/www/glpi
+  wget https://github.com/glpi-project/glpi/releases/download/10.0.10/glpi-10.0.10.tgz -P /var/www/glpi
+  tar -xvf /var/www/glpi/*.tgz -C /var/www/glpi
+  rm -r /var/www/glpi/*.tgz
+  mv /var/www/glpi/glpi/* /var/www/glpi
+  rm -r /var/www/glpi/glpi
+  chown -R www-data:www-data /var/www/glpi
 fi
 
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
