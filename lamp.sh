@@ -76,7 +76,7 @@ then
   chmod +u+r+x /var/www/index.php
   echo "<?php" > /var/www/index.php
   echo "phpinfo()" >> /var/www/index.php
-  echo "?>" >> /var/www/html/index.php
+  echo "?>" >> /var/www/index.php
   rm -r /etc/apache2/sites-available/localhost.conf
   touch /etc/apache2/sites-available/localhost.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/localhost.conf
