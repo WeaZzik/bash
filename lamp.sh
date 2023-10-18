@@ -71,16 +71,16 @@ fi
 if [ "$website_choice" = "" ] || [ "$website_choice" = "Y" ] || [ "$website_choice" = "y" ]
 then
   rm -r /var/www/
-  mkdir /var/www/
-  touch /var/www/index.php
-  chmod +u+r+x /var/www/index.php
-  echo "<?php" > /var/www/index.php
-  echo "phpinfo()" >> /var/www/index.php
-  echo "?>" >> /var/www/index.php
+  mkdir -P /var/www/html
+  touch /var/www/html/index.php
+  chmod +u+r+x /var/www/html/index.php
+  echo "<?php" > /var/www/html/index.php
+  echo "phpinfo()" >> /var/www/html/index.php
+  echo "?>" >> /var/www/html/index.php
   rm -r /etc/apache2/sites-available/localhost.conf
   touch /etc/apache2/sites-available/localhost.conf
   echo "<VirtualHost *:80>" > /etc/apache2/sites-available/localhost.conf
-  echo "	DocumentRoot /var/www" >> /etc/apache2/sites-available/localhost.conf
+  echo "	DocumentRoot /var/www/html" >> /etc/apache2/sites-available/localhost.conf
   if [ "$customurl_choice" = "" ] || [ "$customurl_choice" = "Y" ] || [ "$customurl_choice" = "y" ]
   then
     echo "	ServerName $customurl" >> /etc/apache2/sites-available/localhost.conf
