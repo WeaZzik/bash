@@ -168,6 +168,26 @@ then
   mv /var/www/glpi/glpi/* /var/www/glpi
   rm -r /var/www/glpi/glpi
   chown -R www-data:www-data /var/www/glpi
+  mkdir /var/log/glpi
+  mkdir /var/lib/glpi
+  mkdir /etc/glpi
+  chown -R www-data:www-data /var/lib/glpi
+  chown -R www-data:www-data /var/log/glpi
+  chown -R www-data:www-data /etc/glpi
+  mv -f /var/www/glpi/config /etc/glpi/
+  mv -f /var/www/glpi/files /var/lib/glpi/
+  touch /var/www/glpi/inc/downstream.php
+  echo "<?php" >> /var/www/glpi/inc/downstream.php
+  echo "define('GLPI_CONFIG_DIR', '/etc/glpi/');" >> /var/www/glpi/inc/downstream.php
+  echo "" >> /var/www/glpi/inc/downstream.php
+  echo "if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')){" >> /var/www/glpi/inc/downstream.php
+  echo "	require_once GLPI_CONFIG_DIR . '/local_define.php';" >> /var/www/glpi/inc/downstream.php
+  echo "}" >> /var/www/glpi/inc/downstream.php
+  touch /var/www/glpi/inc/downstream.php
+  echo "<?php" >> /etc/glpi/local_define.php
+  echo "define('GLPI_VAR_DIR', '/var/lib/glpi/');" >> /etc/glpi/local_define.php
+  echo "define('GLPI_LOG_DIR', '/var/log/glpi/');" >> /etc/glpi/local_define.php
+  rm -r /var/www/glpi/install
 fi
 
 if [ "$servertokens_choice" = "" ] || [ "$servertokens_choice" = "Y" ] || [ "$servertokens_choice" = "y" ]
